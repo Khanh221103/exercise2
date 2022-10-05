@@ -107,8 +107,9 @@ func main() {
 	ex2()
 
 	fmt.Println("==========EX3==========")
-	ctx, _ := context.WithTimeout(context.Background(), 3 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
 	ex3(ctx)
+	defer cancel()
 
 	fmt.Println("==========EX4==========")
 	ex4()
