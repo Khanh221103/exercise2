@@ -6,25 +6,23 @@ import (
 	"time"
 )
 
-func makeTimestamp() int64 {
-	return time.Now().UnixMilli()
 }
 func ex1() {
 	for i := 0; i < 3; i++ {
-		timeWait := time.NewTimer(3 * time.Second)
-		a := makeTimestamp()
+		timeWait := time.After(3 * time.Second)
+		a := time.Now().UnixMilli()
 		fmt.Printf("%d\n", a)
 		if i < 2 {
-			<-timeWait.C
+			<-timeWait
 		}
 	}
 	fmt.Println("Kết thúc")
 }
 
 func ex2() {
-	p := fmt.Println
-	now := time.Now()
-	p(now)
+	now := time.Now().Unix()
+	days := now / 60 / 60 /24
+	fmt.Println("Day: ", days)
 }
 
 func ex3(ctx context.Context) {
@@ -61,21 +59,14 @@ func ex5() {
 
 }
 
-func x(ctx context.Context) {
-	timeNow := time.Now().UnixNano()
-	fmt.Println("Time now: ", timeNow)
-
-	time.Sleep(3 * time.Second)
-		timeAfter3s := time.Now().UnixNano()
-		fmt.Println("Time after 3s: ", timeAfter3s)
-		subtractTime := timeAfter3s - timeNow
-		fmt.Printf("Subtract time: %d\n", subtractTime)
-	
-
-}
 func ex7() {
-	cTx := context.TODO()
-	x(cTx)
+	_, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+	defer cancel()
+	context := context.WithValue(context.Background(), "timeNow", time.Now().UnixNano())
+	time.Sleep(3 * time.Second)
+	value1 := time.Now().UnixNano()
+	value2 := context.Value("timeNow").(int64)
+	fmt.Print(value1 - value2)
 }
 
 func ex8() {
